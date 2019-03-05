@@ -59,7 +59,7 @@ def mock(in_rec, out_rec):
     # Parent value randomizer helper function
     def mock_field(val):
 
-	    # Initialize random value for field
+        # Initialize random value for field
         seed = random.random()
         # Perform value randomization
         # These ratios can be modified to create larger tests
