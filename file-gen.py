@@ -90,8 +90,8 @@ def mock(in_rec, out_rec):
 # MAIN
 #####################################################################
 # infile = './datasets/fin_aid_sample.json'
-infile = './datasets/credit_eval_sample.json'
-with open(infile) as f:
+infile = './datasets/MF_app_upload_test_201902280903.json'
+with open(infile, encoding='utf-8') as f:
     indata = json.load(f)
 
 outdata = []
