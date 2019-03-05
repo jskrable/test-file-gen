@@ -15,7 +15,7 @@ import string
 # Takes an input dict and an empty output dict
 def mock(in_rec, out_rec):
 
-	# Helper function to organize sub-dicts
+    # Helper function to organize sub-dicts
     def mock_dict(in_dict):
         obj = {}
         for key in in_dict.keys():
@@ -33,7 +33,7 @@ def mock(in_rec, out_rec):
 
         return group
 
-	# Helper function to swap data types of child fields
+    # Helper function to swap data types of child fields
     def type_swap(val):
         if type(val) is str:
             val = False if random.random() > 0.5 else 12345
@@ -48,7 +48,7 @@ def mock(in_rec, out_rec):
     def val_swap(val):
         if type(val) is str:
             val = ''.join(random.choices(string.ascii_uppercase + string.
-            	ascii_lowercase, k=random.randint(1, 50)))
+                ascii_lowercase, k=random.randint(1, 50)))
         elif type(val) is int:
             val = random.randint(0, (10**10))
         else:
@@ -64,13 +64,13 @@ def mock(in_rec, out_rec):
         # Perform value randomization
         # These ratios can be modified to create larger tests
         if seed > 0.90:
-        	# 10% chance to swap value datatype
+            # 10% chance to swap value datatype
             val = type_swap(val)
         elif seed < 0.10:
-        	# 10% chance to empty value
+            # 10% chance to empty value
             val = None
         elif 0.50 > seed > 0.40:
-        	# 10% chance to randomize value within datatype
+            # 10% chance to randomize value within datatype
             val = val_swap(val)
 
         return val
@@ -87,6 +87,7 @@ def mock(in_rec, out_rec):
     # Return record with new mocked values
     return out_rec
 
+
 # MAIN
 #####################################################################
 # infile = './datasets/fin_aid_sample.json'
@@ -101,7 +102,7 @@ size = len(indata)
 # Loop through list of objects
 for i, record in enumerate(indata):
 
-	# Perform mocking on each
+    # Perform mocking on each
     print('processing record', i+1, 'of', size)
     test_rec = {}
     test_rec = mock(record, test_rec)
