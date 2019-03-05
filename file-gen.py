@@ -33,31 +33,31 @@ def mock(in_rec, out_rec):
 
         return group
 
-    # Parent value randomizer helper function 
+	# Helper function to swap data types of child fields
+    def type_swap(val):
+        if type(val) is str:
+            val = False if random.random() > 0.5 else 12345
+        elif type(val) is int:
+            val = True if random.random() > 0.5 else 'A string value'
+        else:
+            val = 12345 if random.random() > 0.5 else 'A string value'
+
+        return val
+
+    # Helper function to randomize values of child fields
+    def val_swap(val):
+        if type(val) is str:
+            val = ''.join(random.choices(string.ascii_uppercase + string.
+            	ascii_lowercase, k=random.randint(1, 50)))
+        elif type(val) is int:
+            val = random.randint(0, (10**10))
+        else:
+            val = not val
+
+        return val
+
+    # Parent value randomizer helper function
     def mock_field(val):
-
-	    # Helper function to swap data types of child fields
-	    def type_swap(val):
-	        if type(val) is str:
-	            val = False if random.random() > 0.5 else 12345
-	        elif type(val) is int:
-	            val = True if random.random() > 0.5 else 'A string value'
-	        else:
-	            val = 12345 if random.random() > 0.5 else 'A string value'
-
-	        return val
-
-	    # Helper function to randomize values of child fields
-	    def val_swap(val):
-	        if type(val) is str:
-	            val = ''.join(random.choices(string.ascii_uppercase + string.
-	            	ascii_lowercase, k=random.randint(1,50)))
-	        elif type(val) is int:
-	            val = random.randint(0,(10**10))
-	        else:
-	            val = not val
-
-	        return val
 
 	    # Initialize random value for field
         seed = random.random()
@@ -89,7 +89,8 @@ def mock(in_rec, out_rec):
 
 # MAIN
 #####################################################################
-infile = './datasets/fin_aid_sample.json'
+# infile = './datasets/fin_aid_sample.json'
+infile = './datasets/credit_eval_sample.json'
 with open(infile) as f:
     indata = json.load(f)
 
