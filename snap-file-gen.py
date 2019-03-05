@@ -1,10 +1,6 @@
-#!/usr/bin/env python3
-# coding: utf-8
-"""
-snap-file-gen.py
-03-05-2019
-jack skrable
-"""
+# snap-file-gen.py
+# 03-05-2019
+# jack skrable
 
 # Import the interface required by the Script snap.
 from com.snaplogic.scripting.language import ScriptHook
@@ -103,10 +99,12 @@ class TransformScript(ScriptHook):
             try:
                 # Read the next document
                 in_doc = self.input.next()
-                
-                test_doc = {}
-                test_rec = mock(in_doc, test_rec)
 
+                # TODO fix this, not generating a real dict
+                in_rec = dict(in_doc)
+
+                test_rec = {}
+                test_rec = mock(in_rec, test_rec)
 
                 out_doc = java.util.HashMap()
                 out_doc['output'] = test_rec
