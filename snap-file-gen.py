@@ -1,6 +1,8 @@
 # snap-file-gen.py
 # 03-05-2019
 # jack skrable
+# NOTE: need a mapper immediately preceding the script snap with one
+# line, JSON.stringify($) -> $doc
 
 # Import the interface required by the Script snap.
 from com.snaplogic.scripting.language import ScriptHook
@@ -99,9 +101,7 @@ class TransformScript(ScriptHook):
             try:
                 # Read the next document
                 in_doc = self.input.next()
-
-                # TODO fix this, not generating a real dict
-                in_rec = dict(in_doc)
+                in_rec = json.loads(in_doc['doc'])
 
                 test_rec = {}
                 test_rec = mock(in_rec, test_rec)
