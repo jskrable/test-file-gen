@@ -9,15 +9,46 @@ jack skrable
 import json
 import random
 import math
+import sys
 import string
+import argparse
 
-# Globals 
+# Globals
 # Total percent of file that will be modified
-SWAP_RATE = 30
-# Fields that should be modifed very rarely
-HOLD = ['univId']
-# File to mock
-INFILE = './datasets/fin_aid_base.json'
+# SWAP_RATE = 5
+# # File to mock
+# INFILE = './datasets/fin_aid_base.json'
+# # Fields that should be modifed very rarely
+# HOLD = ['univId']
+
+
+# Progress bar for cli
+def progress(count, total, suffix=''):
+    bar_len = 60
+    filled_len = int(round(bar_len * count / float(total)))
+    percents = round(100.0 * count / float(total), 1)
+    bar = '#' * filled_len + '-' * (bar_len - filled_len)
+    sys.stdout.write('[%s] %s%s %s\r' % (bar, percents, '%', suffix))
+    sys.stdout.flush()
+
+
+def arg_parser():
+    # function to parse arguments sent to CLI
+    # setup argument parsing with description and -h method
+    parser = argparse.ArgumentParser(
+        description='Mocks data in a json file for testing purposes')
+    # add size int
+    parser.add_argument('-s', '--swap-rate', default=10, type=int, nargs='?',
+                        help='the total percent of the file to modify, default 10')
+    # add iterations int
+    parser.add_argument('-f', '--file', default='./datasets/sample.json', type=str, nargs='?',
+                        help='path of the file to mock')
+    # add annealing switch
+    parser.add_argument('-r', '--restrict', default=[], type=list, nargs='?',
+                        help='list of fields that should be modified only in rare cases')
+    # parse args and return
+    args = parser.parse_args()
+    return args
 
 
 # Function to mock data for unit testing
@@ -57,7 +88,7 @@ def mock(in_rec, out_rec):
     def val_swap(val):
         if type(val) is str:
             val = ''.join(random.choices(string.ascii_uppercase + string.
-                ascii_lowercase, k=random.randint(1, 50)))
+                                         ascii_lowercase, k=random.randint(1, 50)))
         elif type(val) is int:
             val = random.randint(0, (10**10))
         else:
@@ -92,7 +123,7 @@ def mock(in_rec, out_rec):
         elif type(val) is list:
             out_rec[key] = mock_list(val)
         # Smaller change percentage for primary key
-        elif key in HOLD:
+        elif key in RESTRICT:
             if random.random() > 0.96:
                 out_rec[key] = mock_field(val)
         else:
@@ -104,24 +135,30 @@ def mock(in_rec, out_rec):
 
 # MAIN
 #####################################################################
+args = arg_parser()
+SWAP_RATE = args.swap_rate
+INFILE = args.file
+RESTRICT = args.restrict
 
+print('reading data from', INFILE)
 with open(INFILE, encoding='utf-8') as f:
     indata = json.load(f)
 
 outdata = []
 size = len(indata)
 
+print('mocking [', SWAP_RATE, '] % of file')
 # Loop through list of objects
 for i, record in enumerate(indata):
 
     # Perform mocking on each
-    print('processing record', i+1, 'of', size)
+    progress(i+1, size, 'of records processed')
     test_rec = {}
     test_rec = mock(record, test_rec)
     outdata.append(test_rec)
 
 # Write new mocked data to output file
-outfile = INFILE[:INFILE.find('.j')] + '_mock.json'
-print('writing to',outfile)
+outfile = INFILE[:INFILE.find('.j')] + '_mock-' + str(SWAP_RATE) + '.json'
+print('\nwriting to', outfile)
 with open(outfile, 'w') as f:
     json.dump(outdata, f, indent=2)
