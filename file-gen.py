@@ -8,7 +8,16 @@ jack skrable
 
 import json
 import random
+import math
 import string
+
+# Globals 
+# Total percent of file that will be modified
+SWAP_RATE = 30
+# Fields that should be modifed very rarely
+HOLD = ['univId']
+# File to mock
+INFILE = './datasets/fin_aid_base.json'
 
 
 # Function to mock data for unit testing
@@ -59,17 +68,18 @@ def mock(in_rec, out_rec):
     # Parent value randomizer helper function
     def mock_field(val):
 
+        swap = math.ceil(SWAP_RATE / 3)
         # Initialize random value for field
-        seed = random.random()
+        seed = random.random()*100
         # Perform value randomization
         # These ratios can be modified to create larger tests
-        if seed > 0.90:
+        if seed > (100 - swap):
             # 10% chance to swap value datatype
             val = type_swap(val)
-        elif seed < 0.10:
+        elif seed < swap:
             # 10% chance to empty value
             val = None
-        elif 0.50 > seed > 0.40:
+        elif (math.ceil(swap/2) + 50) > seed > (50 - math.ceil(swap/2)):
             # 10% chance to randomize value within datatype
             val = val_swap(val)
 
@@ -81,6 +91,10 @@ def mock(in_rec, out_rec):
             out_rec[key] = mock_dict(val)
         elif type(val) is list:
             out_rec[key] = mock_list(val)
+        # Smaller change percentage for primary key
+        elif key in HOLD:
+            if random.random() > 0.96:
+                out_rec[key] = mock_field(val)
         else:
             out_rec[key] = mock_field(val)
 
@@ -90,10 +104,8 @@ def mock(in_rec, out_rec):
 
 # MAIN
 #####################################################################
-# infile = './datasets/fin_aid_sample.json'
-infile = './datasets/cred_eval_sample.json'
-# infile = './datasets/app_load_sample.json'
-with open(infile, encoding='utf-8') as f:
+
+with open(INFILE, encoding='utf-8') as f:
     indata = json.load(f)
 
 outdata = []
@@ -109,6 +121,7 @@ for i, record in enumerate(indata):
     outdata.append(test_rec)
 
 # Write new mocked data to output file
-outfile = infile[:infile.find('.j')] + '_mock.json'
+outfile = INFILE[:INFILE.find('.j')] + '_mock.json'
+print('writing to',outfile)
 with open(outfile, 'w') as f:
     json.dump(outdata, f, indent=2)
