@@ -13,14 +13,6 @@ import sys
 import string
 import argparse
 
-# Globals
-# Total percent of file that will be modified
-# SWAP_RATE = 5
-# # File to mock
-# INFILE = './datasets/fin_aid_base.json'
-# # Fields that should be modifed very rarely
-# HOLD = ['univId']
-
 
 # Progress bar for cli
 def progress(count, total, suffix=''):
@@ -37,13 +29,10 @@ def arg_parser():
     # setup argument parsing with description and -h method
     parser = argparse.ArgumentParser(
         description='Mocks data in a json file for testing purposes')
-    # add size int
     parser.add_argument('-s', '--swap-rate', default=10, type=int, nargs='?',
                         help='the total percent of the file to modify, default 10')
-    # add iterations int
     parser.add_argument('-f', '--file', default='./datasets/sample.json', type=str, nargs='?',
                         help='path of the file to mock')
-    # add annealing switch
     parser.add_argument('-r', '--restrict', default=[], type=list, nargs='?',
                         help='list of fields that should be modified only in rare cases')
     # parse args and return
