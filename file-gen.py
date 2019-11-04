@@ -33,7 +33,7 @@ def arg_parser():
                         help='the total percent of the file to modify, default 10')
     parser.add_argument('-f', '--file', default='./datasets/sample.json', type=str, nargs='?',
                         help='path of the file to mock')
-    parser.add_argument('-r', '--restrict', default=[], type=list, nargs='?',
+    parser.add_argument('-r', '--restrict', default=[], type=str, nargs='?',
                         help='list of fields that should be modified only in rare cases')
     # parse args and return
     args = parser.parse_args()
@@ -107,14 +107,14 @@ def mock(in_rec, out_rec):
 
     # Loop through object k/v pairs
     for key, val in in_rec.items():
-        if type(val) is dict:
+        if key in RESTRICT:
+            # do nothing
+            # print(RESTRICT)
+            out_rec[key] = val
+        elif type(val) is dict:
             out_rec[key] = mock_dict(val)
         elif type(val) is list:
             out_rec[key] = mock_list(val)
-        # Smaller change percentage for primary key
-        elif key in RESTRICT:
-            if random.random() > 0.96:
-                out_rec[key] = mock_field(val)
         else:
             out_rec[key] = mock_field(val)
 
