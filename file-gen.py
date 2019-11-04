@@ -151,3 +151,5 @@ outfile = INFILE[:INFILE.find('.j')] + '_mock-' + str(SWAP_RATE) + '.json'
 print('\nwriting to', outfile)
 with open(outfile, 'w') as f:
     json.dump(outdata, f, indent=2)
+
+print('mocking complete')
