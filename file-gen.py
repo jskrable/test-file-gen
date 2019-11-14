@@ -32,9 +32,9 @@ def arg_parser():
     parser.add_argument('-s', '--swap-rate', default=10, type=int, nargs='?',
                         help='the total percent of the file to modify, default 10')
     parser.add_argument('-f', '--file', default='./datasets/sample.json', type=str, nargs='?',
-                        help='path of the file to mock')
-    parser.add_argument('-r', '--restrict', default=[], type=str, nargs='?',
-                        help='list of fields that should be modified only in rare cases')
+                        help='path of the source file to mock up')
+    parser.add_argument('-r', '--restrict', default='', type=str, nargs='?',
+                        help='comma separated list of fields that will not be touched, i.e. [field1],[field2],...')
     # parse args and return
     args = parser.parse_args()
     return args
@@ -127,7 +127,7 @@ def mock(in_rec, out_rec):
 args = arg_parser()
 SWAP_RATE = args.swap_rate
 INFILE = args.file
-RESTRICT = args.restrict
+RESTRICT = args.restrict.split(',')
 
 print('reading data from', INFILE)
 with open(INFILE, encoding='utf-8') as f:
